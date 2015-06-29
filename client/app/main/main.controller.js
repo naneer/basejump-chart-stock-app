@@ -1,27 +1,33 @@
 'use strict';
 
 angular.module('workspaceApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
-    $scope.awesomeThings = [];
+  .controller('MainCtrl', [ '$scope', '$http', 'socket', function ($scope, $http, socket) {
+    var ctrl = this;
+    ctrl.stocks = [];
 
-    $http.get('/api/things').success(function(awesomeThings) {
-      $scope.awesomeThings = awesomeThings;
-      socket.syncUpdates('thing', $scope.awesomeThings);
+    $http.get('/api/stocks').success(function(stocks) {
+      ctrl.stocks = stocks;
+      socket.syncUpdates('stock', ctrl.stocks);
     });
 
-    $scope.addThing = function() {
-      if($scope.newThing === '') {
+    ctrl.addStock = function() {
+      if(ctrl.newStock === '') {
         return;
       }
-      $http.post('/api/things', { name: $scope.newThing });
-      $scope.newThing = '';
+      if(ctrl.stocks.some(function(stock){
+        return stock.symbol === ctrl.newStock;
+      })){ return; };
+      
+      $http.post('/api/stocks', { symbol: ctrl.newStock.toUpperCase() });
+      ctrl.newStock = '';
+      $scope.form.$setPristine();
     };
 
-    $scope.deleteThing = function(thing) {
-      $http.delete('/api/things/' + thing._id);
+    ctrl.deleteStock = function(stock) {
+      $http.delete('/api/stocks/' + stock._id);
     };
 
     $scope.$on('$destroy', function () {
-      socket.unsyncUpdates('thing');
+      socket.unsyncUpdates('stock');
     });
-  });
+  }]);

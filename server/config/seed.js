@@ -6,7 +6,22 @@
 'use strict';
 
 var Thing = require('../api/thing/thing.model');
+var Stock = require('../api/stock/stock.model');
 
+Stock.find({}).remove(function(){
+  Stock.create(
+    { symbol: 'YHOO' },
+    { symbol: 'GOOG' },
+    { symbol: 'AMZN' },
+    { symbol: 'TWTR' },
+    { symbol: 'MSFT' },
+    { symbol: 'EA' },
+    { symbol: 'TTWO' },
+    { symbol: 'EBAY' },
+    { symbol: 'GM' },
+    { symbol: 'KO' }
+  );
+});
 
 Thing.find({}).remove(function() {
   Thing.create({
