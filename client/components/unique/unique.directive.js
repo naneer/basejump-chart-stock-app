@@ -8,7 +8,7 @@ angular.module('workspaceApp')
       link: function (scope, element, attrs, ctrl) {
         ctrl.$validators.unique = function(modelValue, viewValue) {
           return !scope.ctrl.stocks.some(function(stock){
-            return stock.symbol === viewValue;
+            return stock.symbol === viewValue.toUpperCase();
           });
         };
       }
