@@ -11,13 +11,6 @@ angular.module('workspaceApp')
     });
 
     ctrl.addStock = function() {
-      if(ctrl.newStock === '') {
-        return;
-      }
-      if(ctrl.stocks.some(function(stock){
-        return stock.symbol === ctrl.newStock;
-      })){ return; };
-      
       $http.post('/api/stocks', { symbol: ctrl.newStock.toUpperCase() });
       ctrl.newStock = '';
       $scope.form.$setPristine();
