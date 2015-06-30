@@ -19,7 +19,7 @@ angular.module('workspaceApp')
             element.highcharts('StockChart', {
 
              rangeSelector: {
-                    selected: 4
+                    selected: 30
                 },
 
                 yAxis: {

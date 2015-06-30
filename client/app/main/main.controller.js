@@ -1,10 +1,11 @@
 'use strict';
 
 angular.module('workspaceApp')
-  .controller('MainCtrl', [ '$scope', '$http', 'socket', 'yql', function ($scope, $http, socket, yql) {
+  .controller('MainCtrl', [ '$scope', '$http', 'socket', 'yql', 'Color', function ($scope, $http, socket, yql, Color) {
     var ctrl = this;
     ctrl.stocks = [];
     ctrl.series = [];
+    var counter = 0;
     
     var yqlCallback = function(event, stock){
       if(event === "created"){
@@ -16,10 +17,12 @@ angular.module('workspaceApp')
             { 
               name: stock.symbol,
               data: query.results.quote.map(function(quote){
-                return [ new Date(quote.Date).getTime(), parseFloat(quote.Open) ]
-              }).sort()
+                return [ new Date(quote.Date).getTime(), parseFloat(quote.Close) ]
+              }).sort(),
+              color: Color.get(counter)
             }
           );
+          counter++;
         });
       } else if(event === "deleted"){
         var index = ctrl.series.map(function(obj, index){
