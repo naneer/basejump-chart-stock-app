@@ -1,13 +1,43 @@
 'use strict';
 
 angular.module('workspaceApp')
-  .controller('MainCtrl', [ '$scope', '$http', 'socket', function ($scope, $http, socket) {
+  .controller('MainCtrl', [ '$scope', '$http', 'socket', 'yql', function ($scope, $http, socket, yql) {
     var ctrl = this;
     ctrl.stocks = [];
+    ctrl.series = [];
+    
+    var yqlCallback = function(event, stock){
+      if(event === "created"){
+        var query = yql.get(stock.symbol);
+        query.then(function(data){
+          var query = data.query;
+          if(query.results === null) { return; }
+          ctrl.series.push(
+            { 
+              name: stock.symbol,
+              data: query.results.quote.map(function(quote){
+                return [ new Date(quote.Date).getTime(), parseFloat(quote.Open) ]
+              }).sort()
+            }
+          );
+        });
+      } else if(event === "deleted"){
+        var index = ctrl.series.map(function(obj, index){
+          if(obj.name === stock.symbol){ return index; }
+        }).filter(isFinite);
+        index.map(function(idx){ ctrl.series.splice(idx, 1) });
+      }
+    };
 
     $http.get('/api/stocks').success(function(stocks) {
       ctrl.stocks = stocks;
-      socket.syncUpdates('stock', ctrl.stocks);
+      ctrl.stocks.map(function(stock){
+        return yqlCallback("created", stock);
+      });
+      
+      socket.syncUpdates('stock', ctrl.stocks, function(event, item, array){
+        return yqlCallback(event, item);
+      });
     });
 
     ctrl.addStock = function() {
@@ -19,7 +49,7 @@ angular.module('workspaceApp')
     ctrl.deleteStock = function(stock) {
       $http.delete('/api/stocks/' + stock._id);
     };
-
+  
     $scope.$on('$destroy', function () {
       socket.unsyncUpdates('stock');
     });

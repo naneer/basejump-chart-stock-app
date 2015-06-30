@@ -56,6 +56,9 @@
       <script src="bower_components/angular-socket-io/socket.js"></script>
       <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
       <script src="bower_components/angular-messages/angular-messages.js"></script>
+      <script src="bower_components/highstock-release/highstock.js"></script>
+      <script src="bower_components/highstock-release/highcharts-more.js"></script>
+      <script src="bower_components/highstock-release/modules/exporting.js"></script>
       <!-- endbower -->
       <script src="socket.io-client/socket.io.js"></script>
     <!-- endbuild -->
@@ -65,10 +68,13 @@
           <!-- injector:js -->
           <script src="app/main/main.controller.js"></script>
           <script src="app/main/main.js"></script>
+          <script src="components/chart-stock/directive/chart-stock.directive.js"></script>
+          <script src="components/current-date/current-date.service.js"></script>
           <script src="components/modal/modal.service.js"></script>
           <script src="components/navbar/navbar.controller.js"></script>
           <script src="components/socket/socket.service.js"></script>
           <script src="components/unique/unique.directive.js"></script>
+          <script src="components/yql/yql.service.js"></script>
           <!-- endinjector -->
         <!-- endbuild -->
 </body>
